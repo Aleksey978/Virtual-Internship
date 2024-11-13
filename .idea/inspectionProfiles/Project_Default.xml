@@ -1,0 +1,15 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="project.sign.views.news_portal" />
+          <option value="project.news_portal.management.commands.runapscheduler.news_portal" />
+          <option value="project.news_portal.tasks.news_portal" />
+          <option value="project.news_portal.management.commands.deleteallnews.news_portal" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
