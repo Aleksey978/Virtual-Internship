@@ -33,7 +33,7 @@ class PerevalBase(BaseModel):
     connect: str
     add_time: str
     user: UserBase
-    status: PerevalStatus
+    status: PerevalStatus = PerevalStatus.new
     coords: CoordsBase
     level: LevelBase
     images: List[ImageBase]

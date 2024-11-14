@@ -59,3 +59,9 @@ def create_pereval(pereval: PerevalBase, db: Session = Depends(get_db)):
     return db_pereval
 
 
+@app.get("/perevals/{pereval_id}", response_model=PerevalBase)
+def get_pereval(pereval_id: int, db: Session = Depends(get_db)):
+    db_pereval = db.query(models.Pereval).filter(models.Pereval.id == pereval_id).first()
+    if db_pereval is None:
+        raise HTTPException(status_code=404, detail="Pereval not found")
+    return db_pereval
