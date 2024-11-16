@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 import models
 from database import SessionLocal
-from validation import PerevalBase
+from validation import PerevalBase, UpdateResponse
 
 app = FastAPI()
 
@@ -45,7 +45,6 @@ def create_pereval(pereval: PerevalBase, db: Session = Depends(get_db)):
     pereval_data["user_id"] = user.id
     pereval_data["coords_id"] = coords.id
     pereval_data["level_id"] = level.id
-
     db_pereval = models.Pereval(**pereval_data)
     db.add(db_pereval)
     db.commit()
@@ -65,3 +64,27 @@ def get_pereval(pereval_id: int, db: Session = Depends(get_db)):
     if db_pereval is None:
         raise HTTPException(status_code=404, detail="Pereval not found")
     return db_pereval
+
+@app.patch("/perevals/{pereval_id}", response_model=UpdateResponse)
+def update_pereval(pereval_id: int, pereval: PerevalBase, db: Session = Depends(get_db)):
+    db_pereval = db.query(models.Pereval).filter(models.Pereval.id == pereval_id).first()
+    if db_pereval is None:
+        return UpdateResponse(state=0, message="Pereval not found")
+
+    if db_pereval.status != models.PerevalStatus.new:
+        return UpdateResponse(state=0, message="Pereval is not in 'new' status")
+    update_data = pereval.dict(exclude={"user", "coords", "level", "images"})
+
+
+    for item in pereval.images:
+        db.query(models.Image).filter(models.Image.pereval_id == pereval_id).update(item.dict())
+
+
+    db.query(models.Level).filter(models.Level.id == db_pereval.level_id).update(pereval.level.dict())
+    db.query(models.Coords).filter(models.Coords.id == db_pereval.coords_id).update(pereval.coords.dict())
+    db.query(models.Pereval).filter(models.Pereval.id == pereval_id).update(update_data)
+
+    db.commit()
+    db.refresh(db_pereval)
+
+    return UpdateResponse(state=1, message="Pereval updated successfully")

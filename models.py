@@ -56,7 +56,7 @@ class Pereval(Base):
     __tablename__ = "perevals"
 
     id = Column(Integer, primary_key=True, index=True)
-    beauty_title = Column(String)
+    beauty_title = Column(String, nullable=False)
     title = Column(String)
     other_titles = Column(String)
     connect = Column(String)

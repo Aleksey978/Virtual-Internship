@@ -37,3 +37,8 @@ class PerevalBase(BaseModel):
     coords: CoordsBase
     level: LevelBase
     images: List[ImageBase]
+
+
+class UpdateResponse(BaseModel):
+    state: int
+    message: str
