@@ -88,3 +88,10 @@ def update_pereval(pereval_id: int, pereval: PerevalBase, db: Session = Depends(
     db.refresh(db_pereval)
 
     return UpdateResponse(state=1, message="Pereval updated successfully")
+
+@app.get("/perevalData/", response_model=list[PerevalBase])
+def get_perevals_by_email(user__email: str, db: Session = Depends(get_db)):
+    perevals = db.query(models.Pereval).join(models.User).filter(models.User.email == user__email).all()
+    if not perevals:
+        raise HTTPException(status_code=404, detail="No perevals found for this email")
+    return perevals
